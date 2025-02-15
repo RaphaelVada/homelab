@@ -1,0 +1,12 @@
+# devcontainer.json Ergänzungen
+{
+  "postCreateCommand": "chmod +x .devcontainer/scripts/initialize-env.sh && .devcontainer/scripts/initialize-env.sh init",
+  "postStartCommand": ".devcontainer/scripts/initialize-env.sh fetch",
+  "postAttachCommand": ".devcontainer/scripts/initialize-env.sh fetch",
+  "shutdownAction": ".devcontainer/scripts/initialize-env.sh save"
+}
+
+# Dockerfile Ergänzung
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
+    apt-get install -y nodejs jq && \
+    npm install -g @bitwarden/cli

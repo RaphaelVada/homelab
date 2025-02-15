@@ -1,0 +1,54 @@
+# config/kubernetes/examples/configmaps/network-config.example.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: network-config
+  namespace: infrastructure
+data:
+  domain: "home.lab"
+  subnet: "192.168.1.0/24"
+  metallb-pool: "192.168.1.200-192.168.1.220"
+  ingress-class: "nginx"
+  default-ingress: "*.home.lab"
+
+---
+# config/kubernetes/examples/configmaps/storage-config.example.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: storage-config
+  namespace: infrastructure
+data:
+  nas-host: "nas.home.lab"
+  nas-path: "/volume1/kubernetes"
+  backup-path: "/volume1/backups/kubernetes"
+
+---
+# config/kubernetes/examples/secrets/nas-credentials.example.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: nas-credentials
+  namespace: infrastructure
+type: Opaque
+stringData:
+  username: "kubernetes"
+  password: "your-secure-password"
+
+---
+# config/kubernetes/examples/secrets/certificates.example.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tls-certificates
+  namespace: infrastructure
+type: kubernetes.io/tls
+stringData:
+  tls.crt: |
+    -----BEGIN CERTIFICATE-----
+    Your certificate here
+    -----END CERTIFICATE-----
+  tls.key: |
+    -----BEGIN PRIVATE KEY-----
+    Your private key here
+    -----END PRIVATE KEY-----

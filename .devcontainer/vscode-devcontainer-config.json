@@ -1,0 +1,123 @@
+{
+  "name": "Homelab Infrastructure",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {
+    "docker-in-docker": {
+      "version": "latest",
+      "moby": true
+    }
+  },
+  "mounts": [
+    "source=${localEnv:HOME}/homelab-config,target=/workspace/live-config,type=bind",
+    "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Infrastructure & Kubernetes
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "redhat.ansible",
+        "ms-azuretools.vscode-docker",
+
+        // Konfiguration & YAML
+        "redhat.vscode-yaml",
+        "tamasfe.even-better-toml",
+        "hashicorp.hcl",
+
+        // Git & Versionierung
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+
+        // Shell & Terminal
+        "timonwong.shellcheck",
+        "foxundermoon.shell-format",
+
+        // Dokumentation & Diagramme
+        "jebbs.plantuml",
+        "hediet.vscode-drawio",
+        "pomdtr.excalidraw-editor",
+        "yzhang.markdown-all-in-one",
+        "bierner.markdown-mermaid",
+        "DavidAnson.vscode-markdownlint",
+
+        // Produktivität & UI
+        "esbenp.prettier-vscode",
+        "streetsidesoftware.code-spell-checker",
+        "vscode-icons-team.vscode-icons",
+        "christian-kohler.path-intellisense",
+        "oderwat.indent-rainbow",
+        "wayou.vscode-todo-highlight"
+      ],
+      "settings": {
+        // YAML Konfiguration
+        "yaml.schemas": {
+          "kubernetes": [
+            "/*.k8s.yaml",
+            "/*.k8s.yml",
+            "/kubernetes/**/*.yaml"
+          ],
+          "http://json.schemastore.org/ansible-playbook": [
+            "/*playbook.yml",
+            "/*playbook.yaml"
+          ]
+        },
+        "yaml.customTags": [
+          "!reference sequence"
+        ],
+        "[yaml]": {
+          "editor.defaultFormatter": "redhat.vscode-yaml",
+          "editor.formatOnSave": true,
+          "editor.insertSpaces": true,
+          "editor.tabSize": 2,
+          "editor.autoIndent": "keep"
+        },
+
+        // Kubernetes Konfiguration
+        "vs-kubernetes": {
+          "vs-kubernetes.namespace": "",
+          "vs-kubernetes.kubectl-path": "/usr/local/bin/kubectl",
+          "vs-kubernetes.helm-path": "/usr/local/bin/helm"
+        },
+
+        // Git Konfiguration
+        "git.enableSmartCommit": true,
+        "git.autofetch": true,
+        "gitlens.codeLens.enabled": true,
+
+        // Markdown Konfiguration
+        "markdown.preview.breaks": true,
+        "markdown.extension.toc.updateOnSave": true,
+        "[markdown]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
+          "editor.formatOnSave": true
+        },
+
+        // Terminal Konfiguration
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.fontFamily": "MesloLGS NF",
+
+        // Editor Allgemein
+        "editor.formatOnSave": true,
+        "editor.rulers": [80, 120],
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true,
+        "editor.renderWhitespace": "boundary",
+
+        // Sprachen-spezifische Formatierung
+        "[json]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[jsonc]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[shellscript]": {
+          "editor.defaultFormatter": "foxundermoon.shell-format"
+        }
+      }
+    }
+  },
+  "postCreateCommand": "chmod +x .devcontainer/scripts/post-create.sh && .devcontainer/scripts/post-create.sh",
+  "remoteUser": "root"
+}
