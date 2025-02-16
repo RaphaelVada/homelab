@@ -4,7 +4,7 @@
 1. GitHub Repository erstellen
    - Repository `homelab-infrastructure` anlegen   done
    - Basis README.md erstellen                     done
-   - Projektstruktur aus Konzept übernehmen
+   - Projektstruktur aus Konzept übernehmen        done
    - `.gitignore` einrichten                       done
 
 2. Lokales Development Setup

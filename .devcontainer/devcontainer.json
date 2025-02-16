@@ -1,0 +1,33 @@
+{
+	"name": "Homelab Infrastructure",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "devcontainer",
+	"workspaceFolder": "/workspace",
+	
+	"customizations": {
+	  "vscode": {
+		"extensions": [
+		  "ms-kubernetes-tools.vscode-kubernetes-tools",
+		  "redhat.vscode-yaml",
+		  "jebbs.plantuml",
+		  "hediet.vscode-drawio",
+		  "mhutchie.git-graph",
+		  "eamodio.gitlens",
+		  "ms-python.python",
+		  "golang.go",
+		  "hashicorp.terraform",
+		  "ms-azuretools.vscode-docker"
+		],
+		"settings": {
+		  "plantuml.server": "http://localhost:8080",
+		  "plantuml.render": "PlantUMLServer"
+		}
+	  }
+	},
+  
+	"features": {
+	  "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+	},
+  
+	"remoteUser": "root"
+  }
