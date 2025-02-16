@@ -2,10 +2,16 @@
 
 This is the repository of my private homelab setup. Feel free to take a look around.
 
+The whole homelab setup is embedded in my [bootstraping enviroment](./docs/architecture/bootstrap-environment.md). 
+
+This project is currently work in progress. So what I am planning to do is documented in the [implementation plan](implementation-plan.md).
+
+A lot of target concepts are predesigned with help of AI. So there are a lot of features included, which will get stripped out later. 
+
 ## Anforderungen
 
 ### Infrastruktur
-- Proxmox als VirtualisiAerungsplattform
+- Proxmox als Virtualisierungsplattform
 - Mehrere Thin Clients als Hardware
 - NAS für persistenten Speicher
 - Kubernetes als Container-Orchestrierung
