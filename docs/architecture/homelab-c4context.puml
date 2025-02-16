@@ -1,0 +1,70 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Homelab Infrastructure Architecture with Bootstrap Environment
+
+Person(admin, "Administrator", "Verwaltet die Homelab-Infrastruktur")
+
+System_Boundary(bootstrap, "Bootstrap Environment") {
+    Container(vscode, "VS Code", "IDE", "Entwicklungsumgebung")
+
+    System_Boundary(devcontainer, "Dev Container") {
+        Container(tools, "CLI Tools", "Container", "kubectl, talosctl, proxmox-cli, etc.")
+        Container(configs, "Configurations", "Files", "Infrastructure & App Configs")
+        Container(plantuml, "PlantUML Server", "Service", "Dokumentations-Rendering")
+    }
+}
+
+System_Boundary(homelab, "Homelab") {
+    System_Boundary(hardware, "Hardware Layer") {
+        Container(thinclients, "Thin Clients", "Hardware", "Physische Compute-Ressourcen")
+        Container(nas, "NAS", "Hardware", "Network Attached Storage")
+    }
+
+    System_Boundary(virtualization, "Virtualization Layer") {
+        Container(proxmox, "Proxmox VE", "Virtualization", "Hypervisor für VMs")
+    }
+
+    System_Boundary(kubernetes, "Kubernetes Layer") {
+        Container(controlplane, "Control Plane", "Talos OS", "Kubernetes Control Plane Nodes")
+        Container(workers, "Worker Nodes", "Talos OS", "Kubernetes Worker Nodes")
+    }
+
+    System_Boundary(apps, "Application Layer") {
+        Container(nextcloud, "Nextcloud", "App", "File Sharing & Collaboration")
+        Container(paperless, "Paperless", "App", "Document Management")
+        Container(minio, "MinIO", "App", "S3-Compatible Storage")
+    }
+}
+
+' Bootstrap Environment Relationships
+Rel(admin, vscode, "Nutzt", "")
+Rel(vscode, devcontainer, "Startet", "Docker")
+Rel_L(admin, tools, "Verwaltet Infrastructure", "CLI")
+
+' Tools to Infrastructure
+Rel_R(tools, proxmox, "Konfiguriert", "API/CLI")
+Rel_R(tools, kubernetes, "Verwaltet", "kubectl/talosctl")
+Rel_R(tools, nas, "Konfiguriert Storage", "SSH/API")
+
+' Infrastructure Relationships
+Rel(proxmox, thinclients, "Läuft auf", "")
+Rel(proxmox, nas, "Nutzt Storage", "NFS")
+
+Rel(controlplane, proxmox, "Läuft auf", "VM")
+Rel(workers, proxmox, "Läuft auf", "VM")
+
+Rel(nextcloud, workers, "Läuft auf", "Container")
+Rel(paperless, workers, "Läuft auf", "Container")
+Rel(minio, workers, "Läuft auf", "Container")
+
+Rel(nextcloud, nas, "Speichert Daten", "NFS")
+Rel(paperless, nas, "Speichert Daten", "NFS")
+Rel(minio, nas, "Speichert Daten", "NFS")
+
+' Configuration Management
+Rel(configs, tools, "Konfiguriert", "YAML/Scripts")
+
+@enduml

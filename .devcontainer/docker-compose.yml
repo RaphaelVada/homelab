@@ -1,23 +1,35 @@
 services:
   devcontainer:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
+    container_name: bootstrap-devcontainer
     volumes:
       - ../:/workspace:cached
       - ~/.ssh:/root/.ssh:ro
       # Optional: Nur hinzufügen, wenn das Verzeichnis existiert
-      # - ~/homelab-config:/workspace/live-config:cached
+      # - ~/bootstrap-config:/workspace/live-config:cached
     environment:
       - TZ=Europe/Berlin
     command: sleep infinity
     # Wichtig: Container muss privilegiert sein für Docker-in-Docker
     privileged: true
-    
+    networks:
+      - default
+      - bootstrap-network
+
   plantuml:
     image: plantuml/plantuml-server:latest
-    ports:
-      - "8080:8080"
+    container_name: bootstrap-plantuml
+    networks:
+      - default
+      - bootstrap-network
     environment:
       - PLANTUML_LIMIT_SIZE=8192
     restart: unless-stopped
+
+networks:
+  bootstrap-network:
+    name: bootstrap-network
+    driver: bridge
+    internal: false

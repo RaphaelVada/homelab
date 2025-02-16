@@ -2,15 +2,20 @@
 
 This is the repository of my private homelab setup. Feel free to take a look around.
 
-The whole homelab setup is embedded in my [bootstraping enviroment](./docs/architecture/bootstrap-environment.md). 
+The whole homelab setup is embedded in my [bootstraping enviroment](./docs/architecture/bootstrap-environment.md).
 
 This project is currently work in progress. So what I am planning to do is documented in the [implementation plan](implementation-plan.md).
 
-A lot of target concepts are predesigned with help of AI. So there are a lot of features included, which will get stripped out later. 
+A lot of target concepts are predesigned with help of AI. So there are a lot of features included, which will get stripped out later.
+
+## The Goal
+
+![Targetarchitecture](./docs/architecture/homelab-c4context.png)
 
 ## Anforderungen
 
 ### Infrastruktur
+
 - Proxmox als Virtualisierungsplattform
 - Mehrere Thin Clients als Hardware
 - NAS für persistenten Speicher
@@ -18,6 +23,7 @@ A lot of target concepts are predesigned with help of AI. So there are a lot of 
 - Talos OS als spezialisiertes Kubernetes-Betriebssystem
 
 ### Workloads
+
 - Paperless-ng
 - PostgreSQL Datenbanken
 - Teddycloud
@@ -28,18 +34,21 @@ A lot of target concepts are predesigned with help of AI. So there are a lot of 
 ## Ziele
 
 ### Reproduzierbarkeit
+
 - Vollständig automatisierte Setup-Prozesse
 - Infrastructure as Code für alle Komponenten
 - Versionierte Konfigurationen
 - Dokumentierte Prozesse
 
 ### Wartbarkeit
+
 - Zentrale Verwaltung aller Konfigurationen
 - Automatisierte Updates
 - Standardisierte Backup-Prozesse
 - Monitoring und Alerting
 
 ### Entwicklungsumgebung
+
 - Containerisierte Entwicklungsumgebung
 - Vollständige Tool-Suite
 - Integrierte Dokumentations-Werkzeuge
@@ -48,24 +57,28 @@ A lot of target concepts are predesigned with help of AI. So there are a lot of 
 ## Technische Konzepte
 
 ### Infrastructure as Code
+
 - Proxmox-Management über CLI/API
 - Ansible für Systemkonfiguration
 - Kubernetes Manifeste für Workload-Management
 - Versionierung in Git
 
 ### Storage-Konzept
+
 - Dokumente direkt auf NAS (via NFS)
 - Datenbanken auf lokalen SSDs der Hosts
 - Backups von lokalen Daten auf NAS
 - NAS-Backup auf externe USB-Platte
 
 ### Konfigurations-Management
+
 - Trennung zwischen Code (Repository) und Konfiguration (extern)
 - Kubernetes-native Konfiguration über ConfigMaps und Secrets
 - Beispiel-Konfigurationen im Repository als Dokumentation
 - Sensitive Daten ausschließlich in externem Config-Verzeichnis
 
 #### Repository-Struktur für Konfigurationen
+
 ```
 kubernetes/
 ├── base/                          # Manifeste und Templates
@@ -86,6 +99,7 @@ kubernetes/
 ```
 
 #### Externe Konfiguration
+
 ```
 homelab-config/                   # Gemounted, nicht im Repository
 └── kubernetes/
@@ -98,6 +112,7 @@ homelab-config/                   # Gemounted, nicht im Repository
 ```
 
 ### Development Environment
+
 - VSCode Dev Container als Basis
 - Integrierte CLI-Tools:
   - kubectl, helm, kustomize für Kubernetes
@@ -110,6 +125,7 @@ homelab-config/                   # Gemounted, nicht im Repository
   - Markdown für Texte
 
 ### Projektstruktur
+
 - Klare Trennung von Infrastruktur und Anwendungen
 - Zentrale Dokumentation
 - Wiederverwendbare Scripts
@@ -180,26 +196,31 @@ infrastructure-repo/
 ### Verzeichnisstruktur Details
 
 #### .devcontainer/
+
 - Enthält alle Konfigurationen für die Entwicklungsumgebung
 - Dockerfile definiert die Toolchain
 - Docker Compose für zusätzliche Dienste wie PlantUML
 
 #### docs/
+
 - Zentrale Dokumentation des Projekts
 - Architekturdiagramme in PlantUML/Excalidraw
 - Betriebshandbücher und Setup-Anleitungen
 
 #### infrastructure/
+
 - Ansible für Host-Konfiguration
 - Proxmox Templates und Management-Skripte
 - Talos OS Konfiguration für Kubernetes Nodes
 
 #### kubernetes/
+
 - Basis-Konfiguration für Cluster-Services
 - Applikations-spezifische Manifeste
 - Kustomize für Umgebungsspezifische Anpassungen
 
 #### scripts/
+
 - Bootstrap-Skripte für initiales Setup
 - Wartungsskripte für reguläre Aufgaben
 - Backup und Update Automatisierung

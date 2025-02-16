@@ -23,8 +23,6 @@
 
 		  // Productivity & UI
 		  "esbenp.prettier-vscode",
-		  "streetsidesoftware.code-spell-checker",
-		  "vscode-icons-team.vscode-icons",
 		  "christian-kohler.path-intellisense"
 		],
 		"settings": {
@@ -73,7 +71,7 @@
 		  "terminal.integrated.fontFamily": "MesloLGS NF",
 
 		  // PlantUML Configuration
-		  "plantuml.server": "http://localhost:8080",
+		  "plantuml.server": "http://bootstrap-plantuml:8080",
 		  "plantuml.render": "PlantUMLServer"
 		}
 	  }
