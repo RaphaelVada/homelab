@@ -7,18 +7,73 @@
 	"customizations": {
 	  "vscode": {
 		"extensions": [
+		  // Infrastructure & Kubernetes
 		  "ms-kubernetes-tools.vscode-kubernetes-tools",
+		  "redhat.ansible",
+		  "ms-azuretools.vscode-docker",
+  
+		  // Configuration & YAML
 		  "redhat.vscode-yaml",
+  
+		  // Documentation & Diagrams
 		  "jebbs.plantuml",
 		  "hediet.vscode-drawio",
-		  "mhutchie.git-graph",
-		  "eamodio.gitlens",
-		  "ms-python.python",
-		  "golang.go",
-		  "hashicorp.terraform",
-		  "ms-azuretools.vscode-docker"
+		  "pomdtr.excalidraw-editor",
+		  "yzhang.markdown-all-in-one",
+		  "DavidAnson.vscode-markdownlint",
+  
+		  // Productivity & UI
+		  "esbenp.prettier-vscode",
+		  "streetsidesoftware.code-spell-checker",
+		  "vscode-icons-team.vscode-icons",
+		  "christian-kohler.path-intellisense"
 		],
 		"settings": {
+		  // Editor General Settings
+		  "editor.formatOnSave": true,
+		  "editor.rulers": [80, 120],
+		  "editor.renderWhitespace": "boundary",
+		  "files.trimTrailingWhitespace": true,
+		  "files.insertFinalNewline": true,
+  
+		  // YAML Configuration
+		  "yaml.schemas": {
+			"kubernetes": ["/*.k8s.yaml", "/*.k8s.yml", "/kubernetes/**/*.yaml"],
+			"http://json.schemastore.org/ansible-playbook": ["/*playbook.yml", "/*playbook.yaml"]
+		  },
+		  "yaml.customTags": ["!reference sequence"],
+		  "[yaml]": {
+			"editor.defaultFormatter": "redhat.vscode-yaml",
+			"editor.formatOnSave": true,
+			"editor.insertSpaces": true,
+			"editor.tabSize": 2,
+			"editor.autoIndent": "keep"
+		  },
+  
+		  // Kubernetes Configuration
+		  "vs-kubernetes": {
+			"vs-kubernetes.namespace": "",
+			"vs-kubernetes.kubectl-path": "/usr/local/bin/kubectl",
+			"vs-kubernetes.helm-path": "/usr/local/bin/helm"
+		  },
+  
+		  // Git Basic Configuration
+		  "git.enableSmartCommit": true,
+		  "git.autofetch": true,
+  
+		  // Markdown Configuration
+		  "markdown.preview.breaks": true,
+		  "markdown.extension.toc.updateOnSave": true,
+		  "[markdown]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode",
+			"editor.formatOnSave": true
+		  },
+  
+		  // Terminal Configuration
+		  "terminal.integrated.defaultProfile.linux": "zsh",
+		  "terminal.integrated.fontFamily": "MesloLGS NF",
+  
+		  // PlantUML Configuration
 		  "plantuml.server": "http://localhost:8080",
 		  "plantuml.render": "PlantUMLServer"
 		}
