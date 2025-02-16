@@ -3,25 +3,24 @@
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "devcontainer",
 	"workspaceFolder": "/workspace",
-	
+
 	"customizations": {
 	  "vscode": {
 		"extensions": [
 		  // Infrastructure & Kubernetes
 		  "ms-kubernetes-tools.vscode-kubernetes-tools",
 		  "redhat.ansible",
-		  "ms-azuretools.vscode-docker",
-  
+
 		  // Configuration & YAML
 		  "redhat.vscode-yaml",
-  
+
 		  // Documentation & Diagrams
 		  "jebbs.plantuml",
 		  "hediet.vscode-drawio",
 		  "pomdtr.excalidraw-editor",
 		  "yzhang.markdown-all-in-one",
 		  "DavidAnson.vscode-markdownlint",
-  
+
 		  // Productivity & UI
 		  "esbenp.prettier-vscode",
 		  "streetsidesoftware.code-spell-checker",
@@ -35,7 +34,7 @@
 		  "editor.renderWhitespace": "boundary",
 		  "files.trimTrailingWhitespace": true,
 		  "files.insertFinalNewline": true,
-  
+
 		  // YAML Configuration
 		  "yaml.schemas": {
 			"kubernetes": ["/*.k8s.yaml", "/*.k8s.yml", "/kubernetes/**/*.yaml"],
@@ -49,18 +48,18 @@
 			"editor.tabSize": 2,
 			"editor.autoIndent": "keep"
 		  },
-  
+
 		  // Kubernetes Configuration
 		  "vs-kubernetes": {
 			"vs-kubernetes.namespace": "",
 			"vs-kubernetes.kubectl-path": "/usr/local/bin/kubectl",
 			"vs-kubernetes.helm-path": "/usr/local/bin/helm"
 		  },
-  
+
 		  // Git Basic Configuration
 		  "git.enableSmartCommit": true,
 		  "git.autofetch": true,
-  
+
 		  // Markdown Configuration
 		  "markdown.preview.breaks": true,
 		  "markdown.extension.toc.updateOnSave": true,
@@ -68,21 +67,21 @@
 			"editor.defaultFormatter": "esbenp.prettier-vscode",
 			"editor.formatOnSave": true
 		  },
-  
+
 		  // Terminal Configuration
 		  "terminal.integrated.defaultProfile.linux": "zsh",
 		  "terminal.integrated.fontFamily": "MesloLGS NF",
-  
+
 		  // PlantUML Configuration
 		  "plantuml.server": "http://localhost:8080",
 		  "plantuml.render": "PlantUMLServer"
 		}
 	  }
 	},
-  
+
 	"features": {
 	  "ghcr.io/devcontainers/features/docker-in-docker:2": {}
 	},
-  
+
 	"remoteUser": "root"
   }

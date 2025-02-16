@@ -21,9 +21,3 @@ services:
     environment:
       - PLANTUML_LIMIT_SIZE=8192
     restart: unless-stopped
-
-  excalidraw:
-    image: excalidraw/excalidraw:latest
-    ports:
-      - "3000:80"
-    restart: unless-stopped
