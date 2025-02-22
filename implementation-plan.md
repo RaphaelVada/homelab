@@ -10,8 +10,18 @@
 2. Lokales Development Setup
    - [x] Git Repository klonen
    - [ ] Dev Container Konfiguration erstellen
-   - [ ] VSCode Extensions konfigurieren
-   - [ ] Lokales `homelab-config` Verzeichnis anlegen
+      - [x] Basistools integrieren
+      - [x] Dokumentationswerkzeuge implementieren
+      - [ ] Secret Management
+         - [x] Installation
+         - [ ] Test
+         - [ ] Secret management Autommation skripts
+         - [ ] Initialisierung und Nutzung im Runbook dokumentieren
+         - [ ] ADR Dokumentieren: Vault/git-crypt/sops&age
+   - [ ] Entkopellung Core Container zu VS Code Devcontainer setup
+   - [x] VSCode Extensions konfigurieren
+   - [ ] Image deploating/hardening/minimizing (Noch etwas zu Umfangreich durch die KI Vorschläge)
+   - [ ] Shell
 
 ## Phase 2: Proxmox Vorbereitung
 1. Proxmox Zugriff einrichten
