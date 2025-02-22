@@ -9,6 +9,8 @@ RUN apt-get update && apt-get install -y \
     curl \
     fzf \
     git \
+    git-crypt \
+    nfs-common \
     gnupg \
     graphviz \
     jq \
@@ -27,6 +29,14 @@ RUN apt-get update && apt-get install -y \
     # Zusätzliche Dependencies für Entwicklung
     build-essential \
     default-jre \
+    && rm -rf /var/lib/apt/lists/*
+
+# Hashicorp GPG Key und Repository hinzufügen
+RUN wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
+
+# Vault installieren
+RUN apt-get update && apt-get install -y vault \
     && rm -rf /var/lib/apt/lists/*
 
 # Python venv erstellen und aktivieren
@@ -94,6 +104,9 @@ alias tc="talosctl"\n\
 # Helm Aliases\n\
 alias h="helm"\n\
 \n\
+# Vault Completion\n\
+complete -C /usr/bin/vault vault\n\
+alias v="vault"\n\
 # Ansible Aliases\n\
 alias ap="ansible-playbook"\n\
 \n\
@@ -103,6 +116,11 @@ export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin\n\
 
 # Standard-Shell auf zsh setzen
 RUN chsh -s /usr/bin/zsh root
+
+# Post-Start Script kopieren und ausführbar machen
+COPY ./scripts/post-start.sh /usr/local/bin/
+RUN chown root:root /usr/local/bin/post-start.sh && \
+    chmod 755 /usr/local/bin/post-start.sh
 
 # Arbeitsverzeichnis setzen
 WORKDIR /workspace

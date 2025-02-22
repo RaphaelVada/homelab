@@ -7,16 +7,25 @@ services:
     volumes:
       - ../:/workspace:cached
       - ~/.ssh:/root/.ssh:ro
+      - ./_key:/key:ro
+      - ./_secretsrc:/secrets/src:ro
       # Optional: Nur hinzufügen, wenn das Verzeichnis existiert
       # - ~/bootstrap-config:/workspace/live-config:cached
     environment:
       - TZ=Europe/Berlin
-    command: sleep infinity
+      - VAULT_ADDR=https://vault:8200
+      - VAULT_SKIP_VERIFY=true
+      - VAULT_TOKEN=${VAULT_TOKEN}
+    #command: sh -c "/usr/local/bin/post-start.sh && sleep infinity"
+    command: sh -c "sleep infinity"
     # Wichtig: Container muss privilegiert sein für Docker-in-Docker
     privileged: true
     networks:
       - default
       - bootstrap-network
+    depends_on:
+      - vault
+      - plantuml
 
   plantuml:
     image: plantuml/plantuml-server:latest
@@ -27,6 +36,34 @@ services:
     environment:
       - PLANTUML_LIMIT_SIZE=8192
     restart: unless-stopped
+
+  vault:
+    image: hashicorp/vault:1.13.3
+    container_name: bootstrap-vault
+    cap_add:
+      - IPC_LOCK
+    ports:
+      - "8200:8200"
+    environment:
+      - VAULT_ADDR=https://127.0.0.1:8200
+      - VAULT_API_ADDR=https://127.0.0.1:8200
+      - VAULT_LOG_LEVEL=info
+    volumes:
+      - ${VAULT_VOLUME_ROOT}/config:/vault/config
+      - ${VAULT_VOLUME_ROOT}/certs:/vault/certs
+      - ${VAULT_VOLUME_ROOT}/policies:/vault/policies
+      - ${VAULT_VOLUME_ROOT}/file:/vault/file
+      - ${VAULT_VOLUME_ROOT}/logs:/vault/logs
+    command: server
+    networks:
+      - bootstrap-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "HTTPS_SKIP_VERIFY=true", "HTTPS_REQUEST=GET https://127.0.0.1:8200/v1/sys/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
 networks:
   bootstrap-network:

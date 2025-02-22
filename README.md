@@ -143,11 +143,7 @@ infrastructure-repo/
 │   │   └── .oh-my-zsh/
 │   ├── Dockerfile
 │   ├── devcontainer.json
-│   └── docker-compose.yml          # Für PlantUML/Excalidraw Server
-│
-├── .vscode/                        # VSCode Konfiguration
-│   ├── extensions.json
-│   └── settings.json
+│   └── docker-compose.yml          # Für PlantUML
 │
 ├── docs/                           # Dokumentation
 │   ├── architecture/               # Architekturdiagramme
