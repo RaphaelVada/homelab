@@ -2,18 +2,41 @@
 
 # Bootstrap Enviroment
 
-For me the bootstrapping enviroment is curcial for fast homelab configurations. 
+The bootstrap environment serves a dual purpose in this homelab setup: It acts both as a workbench for infrastructure management and as a bootstrapping tool for initial setup and ongoing maintenance. This approach ensures a consistent, secure, and portable environment for managing the homelab infrastructure.
 
-This here bundles everything I need into one dev container. So to bootstrap components I can spin up this enviroment from within the network. So the pc/laptop only needs docker/docker-compose and vs-code. So I can spin up the enviroment.
+## Dual Nature: Workbench & Bootstrap
 
-This should be faster then finding the right configuration tool (cli tool/website, etc.), find the right credentials for each layer i need to go through
+### Workbench Capabilities
+- Development environment for infrastructure code
+- Central point for tool access and configuration
+- Secure handling of credentials and secrets
+- Documentation and planning environment
 
-This is the one stop point for the homelab configuration and configuration tool. In the current days in an professional environment Infrastructure as Code (IaC) is the way to go. Also most provisioning tools provide API access for management and also offer CLI tools for using this tools. Some configurations are put into the enviroments through ssh access to the comand line.
+### Bootstrap Functions
+- Initial infrastructure setup
+- Configuration deployment
+- System recovery procedures
+- Ongoing maintenance operations
 
-So this means that you need the following within your working enviroment:
-- Collection of access tools
-- Configuration scripts and files
-- Access credentials/secrets to the enviroment
+### Key Benefits
+
+1. **Portability**
+   - Minimal host requirements (only Docker/Docker Compose)
+   - Consistent environment across different workstations
+   - Optional VS Code integration, but not dependent on it
+   - Works on any system that can run containers
+
+2. **Security**
+   - Centralized secret management with Vault
+   - RAM-disk based secrets handling
+   - Encrypted configuration storage
+   - Isolated environment for sensitive operations
+
+3. **Reproducibility**
+   - Version-controlled infrastructure configuration
+   - Documented processes and procedures
+   - Automated setup and maintenance scripts
+   - Consistent tool versions across setups
 
 ## Personal requirements
 
@@ -27,6 +50,27 @@ So i come from:
 - separating the compute and data layer
 
 ## Architecture
+
+### Component Overview
+
+1. **Core Container Environment**
+   - Base container with essential tools
+   - Independent of specific IDE/editor
+   - Self-contained CLI tooling
+   - Integrated secret management
+
+2. **Integration Layer**
+   - VS Code Dev Container support
+   - Terminal-based access
+   - Documentation tools (PlantUML, Markdown)
+   - Flexible access methods
+
+3. **Tool Suite**
+   - Kubernetes tools (kubectl, helm, talosctl)
+   - Infrastructure management (Proxmox CLI, Ansible)
+   - Security tools (Vault)
+   - Documentation generators
+
 
 ## Desissions
 
