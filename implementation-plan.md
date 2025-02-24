@@ -14,13 +14,16 @@
       - [x] Dokumentationswerkzeuge implementieren
       - [ ] Secret Management
          - [x] Installation
-         - [ ] Test
+         - [x] Test
+         - [x] Startup script mit auto unseal / Seal
          - [ ] Secret management Autommation skripts
          - [ ] Initialisierung und Nutzung im Runbook dokumentieren
          - [ ] ADR Dokumentieren: Vault/git-crypt/sops&age
    - [ ] Entkopellung Core Container zu VS Code Devcontainer setup
    - [x] VSCode Extensions konfigurieren
-   - [ ] Image deploating/hardening/minimizing (Noch etwas zu Umfangreich durch die KI Vorschläge)
+   - ([ ]) Image deploating/hardening/minimizing (Noch etwas zu Umfangreich durch die KI Vorschläge)
+      - [x] Installationen allgemein optimiert.
+      - ([ ]) Vault installation durch schlankeren Vault client oder REST Operations ersetzen (z.b. https://vault-cli.readthedocs.io/en/latest/)
    - [ ] Shell
 
 ## Phase 2: Proxmox Vorbereitung

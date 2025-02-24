@@ -2,3 +2,4 @@ _key
 _secretsrc*
 _vault-volumes
 .devcontainer/.env
+.devcontainer/Dockerfile.dockerx

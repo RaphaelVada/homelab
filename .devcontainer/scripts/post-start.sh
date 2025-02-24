@@ -30,6 +30,19 @@ if [ -z "${VAULT_TOKEN:-}" ]; then
     error "VAULT_TOKEN ist nicht gesetzt"
 fi
 
+
+# Verzeichnis erstellen falls nicht vorhanden
+mkdir -p "/secrets"
+
+# Ramdisk mounten
+if mount -t tmpfs -o size=50M,mode=700 tmpfs "/secrets"; then
+    log "Successfully mounted ramdisk at /secrets"
+else
+    log "Failed to mount ramdisk"
+    return 1
+fi
+
+
 # Warte auf Vault Service
 log "Warte auf Vault Service..."
 until curl -k -fs https://vault:8200/v1/sys/health > /dev/null 2>&1 || curl -k -fs https://vault:8200/v1/sys/seal-status > /dev/null 2>&1; do
