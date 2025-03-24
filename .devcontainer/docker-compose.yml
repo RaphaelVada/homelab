@@ -6,9 +6,6 @@ services:
     container_name: bootstrap-devcontainer
     volumes:
       - ../:/workspace:cached
-      - ~/.ssh:/root/.ssh:ro
-      - ./_key:/key:ro
-      - ./_secretsrc:/secrets/src:ro
       # Optional: Nur hinzufügen, wenn das Verzeichnis existiert
       # - ~/bootstrap-config:/workspace/live-config:cached
     environment:
@@ -60,7 +57,12 @@ services:
       - bootstrap-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "HTTPS_SKIP_VERIFY=true", "HTTPS_REQUEST=GET https://127.0.0.1:8200/v1/sys/health"]
+      test:
+        [
+          "CMD-SHELL",
+          "HTTPS_SKIP_VERIFY=true",
+          "HTTPS_REQUEST=GET https://127.0.0.1:8200/v1/sys/health",
+        ]
       interval: 10s
       timeout: 5s
       retries: 3
