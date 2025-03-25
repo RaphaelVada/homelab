@@ -45,13 +45,13 @@ fi
 
 # Warte auf Vault Service
 log "Warte auf Vault Service..."
-until curl -k -fs https://vault:8200/v1/sys/health > /dev/null 2>&1 || curl -k -fs https://vault:8200/v1/sys/seal-status > /dev/null 2>&1; do
+until curl -k -fs "$VAULT_ADDR/v1/sys/health" > /dev/null 2>&1 || curl -k -fs "$VAULT_ADDR/v1/sys/seal-status" > /dev/null 2>&1; do
     log "Vault noch nicht erreichbar, warte..."
     sleep 2
 done
 
 # Prüfe Seal Status
-seal_status=$(curl -fs -k https://vault:8200/v1/sys/seal-status | jq -r .sealed)
+seal_status=$(curl -fs -k http://vault:8200/v1/sys/seal-status | jq -r .sealed)
 if [ "$seal_status" = "true" ]; then
     log "Vault ist versiegelt. Führe Unseal durch..."
     # Unseal durchführen

@@ -1,7 +1,6 @@
 {
 	"name": "Homelab Infrastructure",
 	"shutdownAction": "stopCompose",
-	"postCreateCommand": "docker ps -a --filter 'status=exited' --filter 'name=bootstrap-' -q | xargs -r docker rm",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "devcontainer",
 	"workspaceFolder": "/workspace",

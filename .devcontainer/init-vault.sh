@@ -49,7 +49,7 @@ storage "file" {
 
 listener "tcp" {
   address = "0.0.0.0:8200"
-  tls_disable = false
+  tls_disable = true
   tls_cert_file = "/vault/certs/vault.crt"
   tls_key_file  = "/vault/certs/vault.key"
 
@@ -58,8 +58,9 @@ listener "tcp" {
   }
 }
 
-api_addr = "https://127.0.0.1:8200"
+api_addr = "http://127.0.0.1:8200"
 ui = true
+disable_mlock = true
 
 telemetry {
   disable_hostname = true
@@ -95,16 +96,16 @@ fi
 
 # Setze Berechtigungen
 # Setze Berechtigungen - Vault läuft als User 100:1000
-log "Setze Berechtigungen..."
-sudo chown -R 100:1000 "${VAULT_VOLUME_ROOT}"
-sudo chmod -R 750 "${VAULT_VOLUME_ROOT}"
-sudo chmod 600 "${VAULT_VOLUME_ROOT}/certs/vault.key"
-sudo chmod 644 "${VAULT_VOLUME_ROOT}/certs/vault.crt"
-sudo chmod 644 "${VAULT_VOLUME_ROOT}/config/vault.hcl"
+#log "Setze Berechtigungen..."
+#sudo chown -R 100:1000 "${VAULT_VOLUME_ROOT}"
+#sudo chmod -R 750 "${VAULT_VOLUME_ROOT}"
+#sudo chmod 600 "${VAULT_VOLUME_ROOT}/certs/vault.key"
+#sudo chmod 644 "${VAULT_VOLUME_ROOT}/certs/vault.crt"
+#sudo chmod 644 "${VAULT_VOLUME_ROOT}/config/vault.hcl"
 
 success "Vault Initialisierung abgeschlossen!"
 echo -e "\nNächste Schritte:"
 echo "1. Überprüfe die Konfiguration in ${VAULT_VOLUME_ROOT}/config/vault.hcl"
 echo "2. Führe 'docker compose up -d' aus um Vault zu starten"
-echo "3. Initialisiere Vault mit 'docker exec -it bootstrap-vault vault operator init'"
+echo "3. Initialisiere Vault mit 'docker exec -it bootstrap-vault vault operator init -key-shares=1 -key-threshold=1'"
 echo "4. Bewahre die Unseal Keys und Root Token sicher auf"
