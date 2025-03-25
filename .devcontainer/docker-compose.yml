@@ -46,12 +46,13 @@ services:
       - VAULT_ADDR=https://127.0.0.1:8200
       - VAULT_API_ADDR=https://127.0.0.1:8200
       - VAULT_LOG_LEVEL=info
+      - SKIP_CHOWN=true
     volumes:
-      - ${VAULT_VOLUME_ROOT}/config:/vault/config
-      - ${VAULT_VOLUME_ROOT}/certs:/vault/certs
-      - ${VAULT_VOLUME_ROOT}/policies:/vault/policies
-      - ${VAULT_VOLUME_ROOT}/file:/vault/file
-      - ${VAULT_VOLUME_ROOT}/logs:/vault/logs
+      - ${VAULT_VOLUME_ROOT}/config:/vault/config:rw,z
+      - ${VAULT_VOLUME_ROOT}/certs:/vault/certs:rw,z
+      - ${VAULT_VOLUME_ROOT}/policies:/vault/policies:rw,z
+      - ${VAULT_VOLUME_ROOT}/file:/vault/file:rw,z
+      - ${VAULT_VOLUME_ROOT}/logs:/vault/logs:rw,z 
     command: server
     networks:
       - bootstrap-network
