@@ -288,7 +288,7 @@ prepare() {
 }
 
 stop() {
-
+    echo stop
 }
 
 
