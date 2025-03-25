@@ -5,7 +5,7 @@
    - [x] Repository `homelab-infrastructure` anlegen
    - [x] Basis README.md erstellen
    - [x] Projektstruktur aus Konzept übernehmen
-   - [ ] `.gitignore` einrichten
+   - [x] `.gitignore` einrichten
 
 2. Lokales Development Setup
    - [x] Git Repository klonen
@@ -17,11 +17,14 @@
          - [x] Test
          - [x] Startup script mit auto unseal / Seal
          - [ ] Secret management Autommation skripts
+           - [x] Vault als Secret Store
+           - [x] script für sync
+           - [ ] script, um secret files auf ramdisk zu legen, in den vault zu syncen, einen symlinc im projektverzeichnis anzulegen und zu .gitignore hinzu zu fügen.
          - [ ] Initialisierung und Nutzung im Runbook dokumentieren
          - [ ] ADR Dokumentieren: Vault/git-crypt/sops&age
-   - [ ] Entkopellung Core Container zu VS Code Devcontainer setup
+   - [x] Entkopellung Core Container zu VS Code Devcontainer setup
    - [x] VSCode Extensions konfigurieren
-   - ([ ]) Image deploating/hardening/minimizing (Noch etwas zu Umfangreich durch die KI Vorschläge)
+   - ([x]) Image deploating/hardening/minimizing (Noch etwas zu Umfangreich durch die KI Vorschläge)
       - [x] Installationen allgemein optimiert.
       - ([ ]) Vault installation durch schlankeren Vault client oder REST Operations ersetzen (z.b. https://vault-cli.readthedocs.io/en/latest/)
    - [ ] Shell
