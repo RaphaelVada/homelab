@@ -1,18 +1,28 @@
->> This is just my personal setup. I just want to present my bootstraping and give others an example how they could setup something like this. The decissions also reflect my learning processes and reasoning. So this is not supposed to be a template project.
+> > This is just my personal setup. I just want to present my bootstraping and give others an example how they could setup something like this. The decissions also reflect my learning processes and reasoning. So this is not supposed to be a template project.
 
 # Bootstrap Enviroment
 
 The bootstrap environment serves a dual purpose in this homelab setup: It acts both as a workbench for infrastructure management and as a bootstrapping tool for initial setup and ongoing maintenance. This approach ensures a consistent, secure, and portable environment for managing the homelab infrastructure.
 
+## Getting started
+
+For easy and fast spinnup, there is an quick start script for me.
+
+```sh
+bash <(curl -s -L https://raw.githubusercontent.com/RaphaelVada/homelab/refs/heads/main/quick/start.sh)
+```
+
 ## Dual Nature: Workbench & Bootstrap
 
 ### Workbench Capabilities
+
 - Development environment for infrastructure code
 - Central point for tool access and configuration
 - Secure handling of credentials and secrets
 - Documentation and planning environment
 
 ### Bootstrap Functions
+
 - Initial infrastructure setup
 - Configuration deployment
 - System recovery procedures
@@ -21,12 +31,14 @@ The bootstrap environment serves a dual purpose in this homelab setup: It acts b
 ### Key Benefits
 
 1. **Portability**
+
    - Minimal host requirements (only Docker/Docker Compose)
    - Consistent environment across different workstations
    - Optional VS Code integration, but not dependent on it
    - Works on any system that can run containers
 
 2. **Security**
+
    - Centralized secret management with Vault
    - RAM-disk based secrets handling
    - Encrypted configuration storage
@@ -41,10 +53,12 @@ The bootstrap environment serves a dual purpose in this homelab setup: It acts b
 ## Personal requirements
 
 Currently i build up a homelab environment on multiple layers: bare metal thin clients/nas-storage, virtualization and containerization. My main goals are:
+
 - making it robust & repeatable
 - get to the containerization layer as easy as possible (This is the layer where i mainliy want to play arround)
 
-So i come from: 
+So i come from:
+
 - setting up vms with cloud-init templates within proxmox
 - installing docker in vms and run containers based on docker compose on it
 - separating the compute and data layer
@@ -54,12 +68,14 @@ So i come from:
 ### Component Overview
 
 1. **Core Container Environment**
+
    - Base container with essential tools
    - Independent of specific IDE/editor
    - Self-contained CLI tooling
    - Integrated secret management
 
 2. **Integration Layer**
+
    - VS Code Dev Container support
    - Terminal-based access
    - Documentation tools (PlantUML, Markdown)
@@ -70,7 +86,6 @@ So i come from:
    - Infrastructure management (Proxmox CLI, Ansible)
    - Security tools (Vault)
    - Documentation generators
-
 
 ## Desissions
 
@@ -94,8 +109,8 @@ What I am not sure about is, if I really want to rely on microsoft vs-code. I re
 - Folders for configuring the Bootstrap enviroment itself
 - Folders for Architecture Layers / Tools
 - Secrets are stored outside of git-repo and will be mounted into the dev container
-    - Will also include most networking part
-    - Maybe will also cause to place some configuration examples into this project
+  - Will also include most networking part
+  - Maybe will also cause to place some configuration examples into this project
 
 ### ADR: Tooling - Terraform | CLI Collection | Ansible
 
@@ -104,25 +119,24 @@ What I am not sure about is, if I really want to rely on microsoft vs-code. I re
 #### Terraform
 
 - Adapter for Proxmox is Community driven and feature incomplete
-    - Declarative Approach doesn't work propperly
-    - A lot of work is required for preparation and cleanup within proxmox
+  - Declarative Approach doesn't work propperly
+  - A lot of work is required for preparation and cleanup within proxmox
 - Learning terraform propperly doesn't pay off
-    - With templates it's not much work to set up a vm and keep notes of the setup to reproduce it
-    - Complexity and Change rate within the homelab is low
+  - With templates it's not much work to set up a vm and keep notes of the setup to reproduce it
+  - Complexity and Change rate within the homelab is low
 
-I played arround setting up terraform. I got to the point, where I setted up vms within proxmox. So in terraform you need to have an adapter for each infrastructure provider. For proxmox there is no official provider, just an community provider. This community provider unfortunatly doesn't cover the full declarative approach. Sometimes its necessary, to prepare things within proxmox or clean up afterwards. Still the main work to spin up a new vm was to prepare a cloud-init ready template first within proxmox, before running terraform. So also terraform is still a new declaration language i needed to learn. I felt like looking up the according terraform features for the adapter with the risk of not working propperly is more work than just configuring it by hand within the gui. so this is just the vm part. But to work properly with terraform I also need to integrate the networking layer into it. So this means: also integrating network components like routers, dns servers, etc. 
+I played arround setting up terraform. I got to the point, where I setted up vms within proxmox. So in terraform you need to have an adapter for each infrastructure provider. For proxmox there is no official provider, just an community provider. This community provider unfortunatly doesn't cover the full declarative approach. Sometimes its necessary, to prepare things within proxmox or clean up afterwards. Still the main work to spin up a new vm was to prepare a cloud-init ready template first within proxmox, before running terraform. So also terraform is still a new declaration language i needed to learn. I felt like looking up the according terraform features for the adapter with the risk of not working propperly is more work than just configuring it by hand within the gui. so this is just the vm part. But to work properly with terraform I also need to integrate the networking layer into it. So this means: also integrating network components like routers, dns servers, etc.
 
 To be clear: I still think, that terraform is a great tool. Especially in a setup of cloud-hyperscalers. It just don't pay off in my usecase.
 
 #### Ansible
 
 - I love the agnostic approach: Doing everything to SSH
-    - Using Linux native tools
+  - Using Linux native tools
 - It's not declarative by default
 - Maybe doesn't work for everything. Talos OS doesn't come with SSH on purpose.
 
 So I just played arround with terraform to adapt some templates to setup an RKE2 Kubernetes cluster. I loved that everything runs through SSH and setup SSH-Keys. The Playbooks for RKE2 Setup were easy to reproduce and adapt to my homelab. Even fixed a few semantic issues within the roles, to make setup easier. So I see high potential for me. Still not sure, if my usage will be heavy enough to pay off. In the case of the K8s setup I just switched to the Talos OS distribution. This needs to be setup through the API and is designed to not have ssh access for security reasons.
-
 
 #### CLI Collection
 
@@ -135,7 +149,7 @@ So I just played arround with terraform to adapt some templates to setup an RKE2
 So my latest decission on my homelab was to switch to Talos OS. This also means, that I either should use something like terraform or use their CLI tool directly. Looking arround for my proxmox setup also reveals, that I cloud use a proxmox CLI tool. Till now I used the webgui.
 
 So the most tools work like following: Connecting to the service and tell them the desired state. Thus you have following components
+
 - CLI Tool
 - access secret, mostly in separate files
 - some files describing the desired state / list of imperative commands
-
