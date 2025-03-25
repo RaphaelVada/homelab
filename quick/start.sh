@@ -281,7 +281,6 @@ prepare() {
     set_project_directory
     clone_repository
     setup_vault_volumes
-    check_vault_configuration
     create_env_file
     build_docker_images
     show_completion_info
