@@ -275,7 +275,7 @@ show_completion_info() {
     echo ""
 }
 
-prepare(){
+prepare() {
     # Führe alle Schritte aus
     check_prerequisites
     set_project_directory
@@ -287,7 +287,7 @@ prepare(){
     show_completion_info
 }
 
-stop(){
+stop() {
 
 }
 
@@ -296,7 +296,6 @@ stop(){
 main() {
     echo -e "${GREEN}=== Homelab Bootstrap Setup ===${NC}"
     prepare
-
 }
 
 # Führe Hauptfunktion aus
