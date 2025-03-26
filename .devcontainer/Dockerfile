@@ -10,12 +10,16 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     ca-certificates \
     inotify-tools \
+    vim \
     curl \
     git \
     gnupg \
     jq \
     lsb-release \
     make \
+    iputils-ping \
+    iproute2 \
+    net-tools \
     openssh-client \
     python3 \
     python3-pip \

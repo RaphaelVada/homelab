@@ -18,6 +18,9 @@ services:
     #command: sh -c "sleep infinity"
     # Wichtig: Container muss privilegiert sein für Docker-in-Docker
     privileged: true
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
     networks:
       - default
       - bootstrap-network
