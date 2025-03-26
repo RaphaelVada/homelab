@@ -4,7 +4,10 @@ FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Basis-Systempakete installieren
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && \
+    apt install software-properties-common -y --no-install-recommends && \
+    add-apt-repository --yes --update ppa:ansible/ansible && \
+    apt-get install -y --no-install-recommends \
     ca-certificates \
     inotify-tools \
     curl \
@@ -21,24 +24,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     wget \
     zsh \
-    # Vault Installation
-    #&& curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg \
-    #&& echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list \
-    #&& apt-get update \
-    #&& apt-get install -y --no-install-recommends vault \
-    # Zusätzliche Dependencies für Entwicklung
+    ansible \
+    locales \
+    && locale-gen de_DE.UTF-8 \
     && rm -rf /var/lib/apt/lists/*
 
-#Download and install Vault binary directly
-RUN curl -fsSL https://releases.hashicorp.com/vault/1.15.6/vault_1.15.6_linux_amd64.zip -o vault.zip \
-    && unzip vault.zip \
-    && mv vault /usr/local/bin/ \
-    && rm vault.zip \
-    && vault --version
-
-# Python venv erstellen und aktivieren
-RUN 
-ENV PATH="/opt/venv/bin:$PATH"
+ENV LANG=de_DE.UTF-8
+ENV LC_ALL=de_DE.UTF-8
+ENV LANGUAGE=de_DE.UTF-8
 
 # Python Tools in venv installieren
 RUN python3 -m venv /opt/venv \
@@ -48,6 +41,14 @@ RUN python3 -m venv /opt/venv \
     proxmoxer \
     yq
 ENV PATH="/opt/venv/bin:$PATH"
+
+
+#Download and install Vault binary directly
+RUN curl -fsSL https://releases.hashicorp.com/vault/1.15.6/vault_1.15.6_linux_amd64.zip -o vault.zip \
+    && unzip vault.zip \
+    && mv vault /usr/local/bin/ \
+    && rm vault.zip \
+    && vault --version
 
 ## Install only required Kubernetes tools
 RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
@@ -64,7 +65,7 @@ RUN chsh -s /usr/bin/zsh root
 # Kopiere das gesamte scripts Verzeichnis
 COPY ./scripts /usr/local/bin/
 
-# Mache alle Skripte im Verzeichnis ausführbar 
+# Mache alle Skripte im Verzeichnis ausführbar
 RUN find /usr/local/bin -type f -name "*.sh" -exec chmod 755 {} + && \
     find /usr/local/bin -type f -name "*.sh" -exec chown root:root {} +
 

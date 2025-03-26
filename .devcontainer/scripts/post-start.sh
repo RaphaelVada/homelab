@@ -76,4 +76,18 @@ fi
 # Setze Token wieder als Umgebungsvariable
 export VAULT_TOKEN="$VAULT_TOKEN"
 
+log "lade secrets"
+
+vault-sync.sh from-vault
+
+chmod 600 /secrets/ssh_bootstrap-ssh
+chmod 600 /secrets/ssh_bootstrap-ssh.pub
+
+ln -s /secrets/ssh_bootstrap-ssh /root/.ssh/id_ed25519
+ln -s /secrets/ssh_bootstrap-ssh.pub /root/.ssh/id_ed25519.pub
+
+chmod 600 /root/.ssh/id_ed25519
+chmod 600 /root/.ssh/id_ed25519.pub
+
+
 success "Vault Initialisierung abgeschlossen!"
