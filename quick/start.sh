@@ -48,11 +48,6 @@ check_prerequisites() {
         fi
     fi
 
-    # Prüfe, ob NFS-Client installiert ist
-    if ! command -v mount.nfs &> /dev/null; then
-        error "NFS-Client scheint nicht installiert zu sein."
-    fi
-
     success "Alle Voraussetzungen erfüllt!"
 }
 
@@ -106,83 +101,6 @@ clone_repository() {
     fi
 }
 
-# NAS NFS Mount für Vault Volumes einrichten
-setup_vault_volumes() {
-    log "Richte NFS-Mount für Vault Volumes ein..."
-
-    # NAS-Informationen abfragen
-    echo ""
-    echo "Bitte gib die IP-Adresse oder Hostnamen deines NAS ein:"
-    read -p "NAS-Host > " NAS_HOST
-
-    if [ -z "$NAS_HOST" ]; then
-        error "NAS-Host darf nicht leer sein."
-    fi
-
-    echo ""
-    echo "Bitte gib den NFS-Pfad auf dem NAS ein (z.B. /volume1/homelab/vault):"
-    read -p "NFS-Pfad > " NAS_PATH
-
-    if [ -z "$NAS_PATH" ]; then
-        error "NFS-Pfad darf nicht leer sein."
-    fi
-
-    # Prüfe, ob der NAS erreichbar ist
-    log "Prüfe, ob das NAS erreichbar ist..."
-    if ping -c 1 $NAS_HOST &> /dev/null; then
-        success "NAS ist erreichbar"
-    else
-        error "NAS ist nicht erreichbar. Stelle sicher, dass das NAS eingeschaltet ist und im Netzwerk erreichbar ist."
-    fi
-
-    # Vault Volumes Verzeichnispfad
-    VAULT_VOLUMES_DIR="$PROJECT_DIR/_vault-volumes"
-
-    # Erstelle Verzeichnis, falls es nicht existiert
-    if [ ! -d "$VAULT_VOLUMES_DIR" ]; then
-        mkdir -p "$VAULT_VOLUMES_DIR"
-        log "Verzeichnis $VAULT_VOLUMES_DIR erstellt"
-    fi
-
-    # Versuche den NFS-Mount
-    log "Versuche NFS-Mount von $NAS_HOST:$NAS_PATH nach $VAULT_VOLUMES_DIR..."
-    if sudo mount -t nfs "$NAS_HOST:$NAS_PATH" "$VAULT_VOLUMES_DIR"; then
-        success "NFS-Mount erfolgreich eingerichtet"
-
-        # Prüfe, ob die erwarteten Verzeichnisse existieren
-        if [ ! -d "$VAULT_VOLUMES_DIR/config" ] || [ ! -d "$VAULT_VOLUMES_DIR/certs" ] ||
-           [ ! -d "$VAULT_VOLUMES_DIR/policies" ] || [ ! -d "$VAULT_VOLUMES_DIR/file" ] ||
-           [ ! -d "$VAULT_VOLUMES_DIR/logs" ]; then
-            warning "Die erwarteten Vault-Verzeichnisse wurden nicht im NFS-Mount gefunden."
-            echo "Folgende Verzeichnisse müssen auf dem NAS unter $NAS_PATH existieren:"
-            echo "- config"
-            echo "- certs"
-            echo "- policies"
-            echo "- file"
-            echo "- logs"
-
-            # Löse den Mount wieder
-            log "Löse NFS-Mount auf..."
-            sudo umount "$VAULT_VOLUMES_DIR"
-
-            error "Abbruch: Erforderliche Verzeichnisse fehlen. Bitte erstelle die Verzeichnisse auf dem NAS und versuche es erneut."
-        fi
-
-        # Speichere NFS-Mount Information
-        log "NFS-Mount erfolgreich konfiguriert: $NAS_HOST:$NAS_PATH -> $VAULT_VOLUMES_DIR"
-
-    else
-        warning "NFS-Mount fehlgeschlagen. Mögliche Gründe:"
-        echo "- NFS-Dienst ist auf dem NAS nicht aktiviert"
-        echo "- NFS-Export für diesen Client ist nicht konfiguriert"
-        echo "- Firewall blockiert NFS-Verbindungen"
-
-        error "Abbruch: NFS-Mount konnte nicht hergestellt werden."
-    fi
-
-    success "Vault Volumes-Verzeichnis erfolgreich eingerichtet unter $VAULT_VOLUMES_DIR"
-}
-
 # Erstelle .env Datei
 create_env_file() {
     log "Erstelle .env Datei..."
@@ -191,11 +109,27 @@ create_env_file() {
 
     # Erstelle .devcontainer Verzeichnis, falls es nicht existiert
     if [ ! -d "$PROJECT_DIR/.devcontainer" ]; then
-        error ".devcontainer Verzeichnis wurde erstenicht gefunden. Dies deutet darauf hin, dass das Repository möglicherweise nicht korrekt geklont wurde."
+        error ".devcontainer Verzeichnis wurde nicht gefunden. Dies deutet darauf hin, dass das Repository möglicherweise nicht korrekt geklont wurde."
     fi
 
-    # Setze VAULT_VOLUME_ROOT
-    VAULT_VOLUME_ROOT="$VAULT_VOLUMES_DIR"
+    # Frage nach NFS_ADRESS
+    echo ""
+    echo "Bitte gib die IP-Adresse oder den Hostnamen deines NAS ein:"
+    read -p "NFS_ADRESS > " NFS_ADRESS
+
+    if [ -z "$NFS_ADRESS" ]; then
+        error "NFS_ADRESS darf nicht leer sein."
+    fi
+
+    # Frage nach VAULT_VOLUME_ROOT
+    echo ""
+    echo "Bitte gib den Pfad zum Vault Volume auf dem NAS ein:"
+    echo "Beispiel: /volume1/bootstrap/vault-volume"
+    read -p "VAULT_VOLUME_ROOT > " VAULT_VOLUME_ROOT
+
+    if [ -z "$VAULT_VOLUME_ROOT" ]; then
+        error "VAULT_VOLUME_ROOT darf nicht leer sein."
+    fi
 
     # Frage nach VAULT_TOKEN und VAULT_UNSEAL_KEY
     echo ""
@@ -206,12 +140,11 @@ create_env_file() {
     echo "Bitte gib den Vault Unseal Key ein (falls nicht vorhanden, wird ein neuer generiert):"
     read -p "VAULT_UNSEAL_KEY > " VAULT_UNSEAL_KEY
 
-
-
     # Erstelle .env Datei
     cat > "$ENV_FILE_PATH" << EOF
 # Generiert durch das Bootstrap-Script am $(date)
 VAULT_VOLUME_ROOT=$VAULT_VOLUME_ROOT
+NFS_ADRESS=$NFS_ADRESS
 VAULT_TOKEN=$VAULT_TOKEN
 VAULT_UNSEAL_KEY=$VAULT_UNSEAL_KEY
 EOF
@@ -224,7 +157,6 @@ EOF
     echo "Diese Datei enthält sensitive Informationen und sollte sicher aufbewahrt werden."
     echo ""
 }
-
 
 # Baue Docker Images für die Entwicklungsumgebung
 build_docker_images() {
@@ -256,7 +188,8 @@ show_completion_info() {
     echo -e "${GREEN}=== Bootstrap erfolgreich abgeschlossen ===${NC}"
     echo ""
     echo "Projektverzeichnis: $PROJECT_DIR"
-    echo "Vault Volumes (NFS-Mount): $VAULT_VOLUMES_DIR"
+    echo "NAS Adresse: $NFS_ADRESS"
+    echo "Vault Volume Root auf NAS: $VAULT_VOLUME_ROOT"
     echo ""
     echo -e "${YELLOW}Wichtige nächste Schritte:${NC}"
     echo "1. Öffne das Projektverzeichnis in VS Code: code $PROJECT_DIR"
@@ -268,33 +201,23 @@ show_completion_info() {
     echo "Nach dem Start ist die Vault UI erreichbar unter https://localhost:8200"
     echo "Die Zugangsdaten befinden sich in der .env Datei unter .devcontainer/.env"
     echo ""
-    echo -e "${YELLOW}NFS-Mount Information:${NC}"
-    echo "Der NFS-Mount wird beim Neustart nicht automatisch wiederhergestellt."
-    echo "Um den NFS-Mount nach einem Neustart manuell wiederherzustellen:"
-    echo "sudo mount -t nfs $NAS_HOST:$NAS_PATH $VAULT_VOLUMES_DIR"
+    echo -e "${YELLOW}Wichtiger Hinweis:${NC}"
+    echo "Stelle sicher, dass das angegebene Vault-Volume-Verzeichnis auf dem NAS existiert"
+    echo "und alle benötigten Unterverzeichnisse enthält (/config, /certs, /policies, /file, /logs)."
     echo ""
 }
-
-prepare() {
-    # Führe alle Schritte aus
-    check_prerequisites
-    set_project_directory
-    clone_repository
-    setup_vault_volumes
-    create_env_file
-    build_docker_images
-    show_completion_info
-}
-
-stop() {
-    echo stop
-}
-
 
 # Hauptfunktion
 main() {
     echo -e "${GREEN}=== Homelab Bootstrap Setup ===${NC}"
-    prepare
+    
+    # Führe alle Schritte aus
+    check_prerequisites
+    set_project_directory
+    clone_repository
+    create_env_file
+    build_docker_images
+    show_completion_info
 }
 
 # Führe Hauptfunktion aus

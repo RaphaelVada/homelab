@@ -52,11 +52,11 @@ services:
       - VAULT_LOG_LEVEL=info
       - SKIP_CHOWN=true
     volumes:
-      - ${VAULT_VOLUME_ROOT}/config:/vault/config:rw,z
-      - ${VAULT_VOLUME_ROOT}/certs:/vault/certs:rw,z
-      - ${VAULT_VOLUME_ROOT}/policies:/vault/policies:rw,z
-      - ${VAULT_VOLUME_ROOT}/file:/vault/file:rw,z
-      - ${VAULT_VOLUME_ROOT}/logs:/vault/logs:rw,z
+      - vault-config:/vault/config:rw,z
+      - vault-certs:/vault/certs:rw,z
+      - vault-policies:/vault/policies:rw,z
+      - vault-file:/vault/file:rw,z
+      - vault-logs:/vault/logs:rw,z
     command: server
     networks:
       - bootstrap-network
@@ -78,3 +78,35 @@ networks:
     name: bootstrap-network
     driver: bridge
     internal: false
+
+volumes:
+  vault-config:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: nfsvers=4.1,addr=${NFS_ADRESS},rw,noacl,soft,nolock
+      device: ":${VAULT_VOLUME_ROOT}/config"
+  vault-certs:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: nfsvers=4.1,addr=${NFS_ADRESS},rw,noacl,soft,nolock
+      device: ":${VAULT_VOLUME_ROOT}/certs"
+  vault-policies:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: nfsvers=4.1,addr=${NFS_ADRESS},rw,noacl,soft,nolock
+      device: ":${VAULT_VOLUME_ROOT}/policies"
+  vault-file:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: nfsvers=4.1,addr=${NFS_ADRESS},rw,noacl,soft,nolock
+      device: ":${VAULT_VOLUME_ROOT}/file"
+  vault-logs:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: nfsvers=4.1,addr=${NFS_ADRESS},rw,noacl,soft,nolock
+      device: ":${VAULT_VOLUME_ROOT}/logs"
