@@ -3,3 +3,5 @@ _secretsrc*
 _vault-volumes
 .devcontainer/.env
 .devcontainer/Dockerfile.dockerx
+services/core-dns/Corefile
+services/core-dns/internal-domain.db

@@ -55,3 +55,36 @@ seems a bit simple in the end. I missed how to set up project actually with ansi
 But actually whats neat is that the inventory is like our deployment nodes and the roles could be our logical layer. (Thinking of architecture documentation)
 
 also i need to incooperate ansible vault or replace it with hashicorp vault
+
+## installing dns
+
+I just switched my idea. I first started out with bind9 in mind.
+https://www.youtube.com/watch?v=syzwLwE3Xq4
+
+but i wanted something simpler.
+I stumbled on coreDNS. This is allready used by k8s clusters.
+https://medium.com/@bensoer/setup-a-private-homelab-dns-server-using-coredns-and-docker-edcfdded841a
+https://coredns.io/
+
+this is way more simplistic.
+
+https://coredns.io/plugins/tls/
+
+so as upstream dns i chose quad9
+i later want to enable dns over tls
+
+IPv4
+9.9.9.9
+
+149.112.112.112
+
+IPv6
+2620:fe::fe
+
+2620:fe::9
+
+HTTPS
+https://dns.quad9.net/dns-query
+
+TLS
+tls://dns.quad9.net

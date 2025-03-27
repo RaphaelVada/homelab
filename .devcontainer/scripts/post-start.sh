@@ -86,6 +86,9 @@ chmod 600 /secrets/ssh_bootstrap-ssh.pub
 ln -s /secrets/ssh_bootstrap-ssh /root/.ssh/id_ed25519
 ln -s /secrets/ssh_bootstrap-ssh.pub /root/.ssh/id_ed25519.pub
 
+ln -s /secrets/services_core-dns_Corefile /workspace/services/core-dns/Corefile
+ln -s /secrets/ervices_core-dns_internal-domain.db /workspace/services/core-dns/internal-domain.db
+
 chmod 600 /root/.ssh/id_ed25519
 chmod 600 /root/.ssh/id_ed25519.pub
 

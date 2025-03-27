@@ -1,0 +1,39 @@
+.:53 {
+    acl {
+        allow net <INTERNAL_NETWORK>/16
+        block
+    }
+    forward . <PUBLIC_DNS_1> <PUBLIC_DNS_2>
+    log
+    errors
+    health :8080
+}
+
+<INTERNAL_DOMAIN>:53 {
+    acl {
+        allow net <INTERNAL_NETWORK>/16
+        block
+    }
+    file /etc/coredns/<INTERNAL_DOMAIN>.db
+    log
+    errors
+}
+
+<ROUTER_DOMAIN>:53 {
+    acl {
+        allow net <INTERNAL_NETWORK>/16
+        block
+    }
+    forward . <ROUTER_IP>
+}
+
+<REVERSE_DNS_ZONE> {
+    acl {
+        allow net <INTERNAL_NETWORK>/16
+        block
+    }
+    file /etc/coredns/<INTERNAL_DOMAIN>.db
+    forward . <ROUTER_IP>
+    log
+    errors
+}
