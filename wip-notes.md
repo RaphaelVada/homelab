@@ -88,3 +88,27 @@ https://dns.quad9.net/dns-query
 
 TLS
 tls://dns.quad9.net
+
+# storing secrets
+
+i added some scripts, to make files to secrets:
+
+- moving to secret directory on ramdisk
+- placing symlink on current place
+- adding filesync to startup
+- adding file to git-ignore
+- syncing the vault
+
+I also need some functions to remove the files from secrets
+maybe there is still some issue with git ignore, if that are files from outside the workspace
+Also currently i sync the whole vault. maybe i chould only synced changed files
+finally I should remove files from vault
+and also i might want to sync the secrets on git commit
+
+# btw
+
+- I need to relocate the \_vault-volumes to be outside of the dev container
+- I should support spinning up the dev container and then have the option
+  - excecute first init from there
+  - load current settings
+- maybe i could bake in nfs mount into my docker-compose?
