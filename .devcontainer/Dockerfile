@@ -29,6 +29,7 @@ RUN apt-get update && \
     wget \
     zsh \
     ansible \
+    ansible-lint \
     locales \
     && locale-gen de_DE.UTF-8 \
     && rm -rf /var/lib/apt/lists/*

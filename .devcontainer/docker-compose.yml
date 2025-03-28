@@ -52,6 +52,11 @@ services:
       - VAULT_LOG_LEVEL=info
       - SKIP_CHOWN=true
     volumes:
+#      - /home/raphael/Schreibtisch/backup/config:/vault/config
+#      - /home/raphael/Schreibtisch/backup/certs:/vault/certs
+#      - /home/raphael/Schreibtisch/backup/policies:/vault/policies
+#      - /home/raphael/Schreibtisch/backup/file:/vault/file
+#      - /home/raphael/Schreibtisch/backup/logs:/vault/logs
       - vault-config:/vault/config:rw,z
       - vault-certs:/vault/certs:rw,z
       - vault-policies:/vault/policies:rw,z
@@ -62,12 +67,7 @@ services:
       - bootstrap-network
     restart: unless-stopped
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "HTTPS_SKIP_VERIFY=true",
-          "HTTPS_REQUEST=GET http://127.0.0.1:8200/v1/sys/health",
-        ]
+      test: [ "CMD-SHELL", "HTTPS_SKIP_VERIFY=true", "HTTPS_REQUEST=GET http://127.0.0.1:8200/v1/sys/health" ]
       interval: 10s
       timeout: 5s
       retries: 3
