@@ -1,0 +1,5 @@
+---
+# /workspace/infrastructure/ansible/roles/core-dns/meta/main.yml
+
+dependencies:
+  - role: docker-host

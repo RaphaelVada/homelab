@@ -1,0 +1,42 @@
+---
+# /workspace/infrastructure/ansible/roles/core-dns/tasks/update.yml
+
+- name: Kopiere aktualisierte Zone-Datei auf den Remote-Server
+  copy:
+    src: "{{ services_dir }}/core-dns/internal-domain.db"
+    dest: "{{ coredns_config_dir }}/internal-domain.db"
+    mode: "0644"
+  register: zonefile_updated
+  tags:
+    - config
+    - dns
+    - update-dns
+
+# CoreDNS lädt Zonendateien automatisch neu, wenn sich diese ändern (Auto-Reload)
+# Falls dein CoreDNS keine auto-reload Funktion nutzt, musst du den Container neustarten:
+- name: Sende Reload-Signal an CoreDNS (falls nötig)
+  command: docker kill --signal=SIGUSR1 coredns
+  when: zonefile_updated.changed
+  ignore_errors: yes
+  tags:
+    - config
+    - dns
+    - update-dns
+
+- name: Überprüfe DNS-Einträge nach Update
+  command: docker exec coredns dig @localhost example.internal
+  register: dns_check
+  ignore_errors: yes
+  changed_when: false
+  when: zonefile_updated.changed
+  tags:
+    - test
+    - update-dns
+
+- name: Ausgabe des DNS-Tests
+  debug:
+    var: dns_check.stdout_lines
+  when: dns_check is defined
+  tags:
+    - test
+    - update-dns

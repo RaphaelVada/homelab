@@ -1,0 +1,13 @@
+---
+# /workspace/infrastructure/ansible/roles/core-dns/handlers/main.yml
+
+- name: restart coredns
+  docker_container:
+    name: coredns
+    restart: yes
+  listen: "restart coredns service"
+
+- name: reload coredns
+  command: docker kill --signal=SIGUSR1 coredns
+  ignore_errors: yes
+  listen: "reload coredns configuration"

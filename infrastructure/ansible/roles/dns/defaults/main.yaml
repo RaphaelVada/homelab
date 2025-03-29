@@ -1,0 +1,10 @@
+---
+# /workspace/infrastructure/ansible/roles/core-dns/defaults/main.yml
+
+# CoreDNS-Variablen
+coredns_image: coredns/coredns:1.12.0
+coredns_config_dir: /opt/coredns
+
+# Projekt-Verzeichnisse
+workspace_dir: /workspace
+services_dir: "{{ workspace_dir }}/services"

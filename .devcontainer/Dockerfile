@@ -44,10 +44,11 @@ RUN python3 -m venv /opt/venv \
     && pip3 install --no-cache-dir \
     ansible-core \
     proxmoxer \
+    docker \
     yq
 ENV PATH="/opt/venv/bin:$PATH"
 
-
+RUN ansible-galaxy collection install community.docker
 #Download and install Vault binary directly
 RUN curl -fsSL https://releases.hashicorp.com/vault/1.15.6/vault_1.15.6_linux_amd64.zip -o vault.zip \
     && unzip vault.zip \

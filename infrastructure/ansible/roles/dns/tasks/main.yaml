@@ -1,0 +1,12 @@
+---
+# /workspace/infrastructure/ansible/roles/core-dns/tasks/main.yml
+
+- name: Prüfe CoreDNS-Rolle-Variablen
+  fail:
+    msg: "CoreDNS Konfigurationsverzeichnis ist nicht definiert"
+  when: coredns_config_dir is not defined
+
+- name: Include deployment tasks
+  import_tasks: deploy.yaml
+# Tags werden verwendet, um bestimmte Aufgaben auszuwählen
+# z.B. ansible-playbook -i inventory.ini playbook.yml --tags "update-dns"

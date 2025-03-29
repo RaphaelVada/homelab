@@ -1,6 +1,42 @@
 ---
-- name: Install Docker on Ubuntu
-  hosts: docker02
+#- name: ubuntu maintanance
+#  hosts: loadbalancer-01,
+#  become: true
+#  roles:
+#    - ubuntu-maintain
+#
+#- name: init loadbalancer
+#  hosts: loadbalancer-01
+#  become: true
+#  roles:
+#    - docker-host
+#- haproxy do later
+
+- name: init dns
+  hosts: dns-test
   become: true
   roles:
-    - host-docker
+    - docker-host
+  #   - dns #make it an combinded migration later
+
+  # include zone
+
+  # config service hyper01-03, dns,
+
+- name: Deploy CoreDNS Service
+  hosts: dns-test
+  become: true
+  vars:
+    workspace_dir: /workspace
+    services_dir: "{{ workspace_dir }}/services"
+  roles:
+    - dns
+
+# /workspace/infrastructure/ansible/playbooks/update-dns.yml
+
+- name: Update DNS Entries
+  hosts: dns-test
+  become: true
+  vars:
+    workspace_dir: /workspace
+    services_dir: "{{ workspace_dir }}/services"

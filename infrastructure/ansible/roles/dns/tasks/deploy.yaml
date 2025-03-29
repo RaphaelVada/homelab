@@ -1,0 +1,104 @@
+---
+# /workspace/infrastructure/ansible/roles/core-dns/tasks/deploy.yml
+
+# Docker-Installation wird über die separate Rolle 'docker-host' verwaltet
+# Wir setzen hier voraus, dass Docker bereits installiert und konfiguriert ist
+
+- name: Deaktiviere den DNS Stub Listener in systemd-resolved
+  lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: "^#?DNSStubListener="
+    line: "DNSStubListener=no"
+  register: resolved_conf_updated
+  tags:
+    - setup
+    - dns
+
+- name: Starte systemd-resolved neu
+  systemd:
+    name: systemd-resolved
+    state: restarted
+  when: resolved_conf_updated.changed
+  tags:
+    - setup
+    - dns
+
+- name: Erstelle CoreDNS-Konfigurationsverzeichnis
+  file:
+    path: "{{ coredns_config_dir }}"
+    state: directory
+    mode: "0755"
+  tags:
+    - setup
+    - config
+
+- name: Kopiere Corefile auf den Remote-Server
+  copy:
+    src: "{{ services_dir }}/core-dns/Corefile"
+    dest: "{{ coredns_config_dir }}/Corefile"
+    mode: "0644"
+  register: corefile_copied
+  tags:
+    - config
+    - dns
+
+- name: Kopiere Zone-Datei (internal-domain.db) auf den Remote-Server
+  copy:
+    src: "{{ services_dir }}/core-dns/internal-domain.db"
+    dest: "{{ coredns_config_dir }}/internal-domain.db"
+    mode: "0644"
+  register: zonefile_copied
+  tags:
+    - config
+    - dns
+
+- name: Stoppe vorhandenen CoreDNS-Container (falls vorhanden)
+  docker_container:
+    name: coredns
+    state: absent
+  ignore_errors: yes
+  when: corefile_copied.changed or zonefile_copied.changed
+  tags:
+    - docker
+    - deploy
+
+- name: Starte CoreDNS-Container
+  docker_container:
+    name: coredns
+    image: "{{ coredns_image }}"
+    command: -conf /etc/coredns/Corefile -dns.port 53
+    state: started
+    restart_policy: unless-stopped
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"
+      - "8081:8080"
+    volumes:
+      - "{{ coredns_config_dir }}/Corefile:/etc/coredns/Corefile"
+      - "{{ coredns_config_dir }}/internal-domain.db:/etc/coredns/internal-domain.db"
+  register: coredns_container
+  tags:
+    - docker
+    - deploy
+
+- name: Warte auf Containerstart
+  pause:
+    seconds: 3
+  when: coredns_container.changed
+  tags:
+    - deploy
+
+- name: Überprüfe DNS-Funktionalität
+  command: dig @localhost example.internal
+  register: dns_check
+  ignore_errors: yes
+  changed_when: false
+  tags:
+    - test
+
+- name: Ausgabe des DNS-Tests
+  debug:
+    var: dns_check.stdout_lines
+  when: dns_check is defined
+  tags:
+    - test

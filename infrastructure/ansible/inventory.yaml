@@ -1,10 +1,107 @@
-vm:
-  hosts:
-    docker01:
-      ansible_host: 192.168.100.150
-      ansible_user: "root"
-      ansible_python_interpreter: /usr/bin/python3.8
-    docker02:
-      ansible_host: 192.168.100.152
-      ansible_user: "root"
-      ansible_python_interpreter: /usr/bin/python3.8
+all:
+  children:
+    # Netzwerk-basierte Gruppierung
+    networks:
+      children:
+        network_management:
+          hosts:
+            router:
+              ansible_host: 192.168.0.1
+              managed: false # Wird nicht von Ansible verwaltet
+              networks:
+                - management
+
+        network_server:
+          hosts:
+            hyper01:
+              ansible_host: 192.168.1.101
+              networks:
+                - server
+                - management
+              network_interfaces:
+                server: 192.168.100.1
+                management: 10.0.1.101 # Management-IP
+            hyper02:
+              ansible_host: 192.168.2.102
+              networks:
+                - server
+                - management
+              network_interfaces:
+                server: 192.168.100.2
+                management: 10.0.1.102
+            hyper03:
+              ansible_host: 192.168.2.103
+              networks:
+                - server
+                - management
+              network_interfaces:
+                server: 192.168.100.3
+                management: 10.0.1.103
+            storage:
+              ansible_host: 192.168.2.110
+              managed: false # Wird nicht von Ansible verwaltet
+              networks:
+                - server
+                - management
+              network_interfaces:
+                server: 192.168.100.110
+                management: 10.0.2.110
+
+        network_service:
+          hosts:
+            loadbalancer-01:
+              ansible_host: 192.168.100.152
+              ansible_user: "root"
+              ansible_python_interpreter: /usr/bin/python3.8
+              networks:
+                - management
+              network_interfaces:
+                management: 92.168.100.152
+            dns-01:
+              ansible_host: 192.168.100.150
+              ansible_user: "root"
+              ansible_python_interpreter: /usr/bin/python3.8
+              description: "CoreDNS Server"
+              networks:
+                - management
+              network_interfaces:
+                management: 192.168.100.150
+            dns-02:
+              ansible_host: 192.168.100.101
+              description: "Pi-hole for adblocking"
+              networks:
+                - management
+              network_interfaces:
+                management: 192.168.100.101
+            dns-test:
+              ansible_host: 192.168.100.153
+              description: "Pi-hole for adblocking"
+              networks:
+                - management
+              network_interfaces:
+                management: 192.168.100.153
+
+    # Funktionale Gruppierung
+    infrastructure:
+      children:
+        vmcluster:
+          hosts:
+            hyper01:
+            hyper02:
+            hyper03:
+
+        storageservers:
+          hosts:
+            storage:
+
+        networkservices:
+          hosts:
+            loadbalancer-01:
+            dns-01:
+            dns-02:
+
+    managed_hosts:
+      hosts:
+        loadbalancer-01:
+        dns-01:
+        dns-test:
