@@ -3,6 +3,8 @@ version: "3"
 services:
   haproxy:
     image: haproxy:3.1
+    dns:
+      - 192.168.100.101 # Primärer DNS-Server TBD: Ist aktuell der Pihole. Sollte besser der coredns sein. der ist aber in der gleichen docker instanz, wodurch dessen ip zum loobpack wird.
     container_name: haproxy
     restart: unless-stopped
     ports:

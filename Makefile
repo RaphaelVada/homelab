@@ -8,7 +8,7 @@ srv-cfg-locale:
 SERVER_IP ?= 192.168.100.153
 DNS_PORT ?= 53
 
-.PHONY: help deploy-core-dns
+.PHONY: help deploy-core-dns deploy-ha-proxy secret-save secret-load
 
 # Standardziel
 help:
@@ -77,3 +77,26 @@ secret-save:
 
 secret-load:
 	vault-sync.sh from-vault
+
+
+
+
+# Core-DNS Deployment
+deploy-ha-proxy:
+	@echo "=== Deploying ha-proxy auf $(SERVER_IP) ==="
+
+	@echo "Synchronisiere Dateien (inkl. Auflösung von Symlinks, ohne Berechtigungen)..."
+	ssh $(SERVER_IP) "mkdir -p ~/ha-proxy"
+	rsync -rvzL --exclude '.git/' ./services/ha-proxy/ $(SERVER_IP):~/ha-proxy/
+	ssh $(SERVER_IP) "mkdir -p ~/ha-proxy"
+	rsync -rvzL --exclude '.git/' ./services/ha-proxy/ $(SERVER_IP):~/ha-proxy/
+
+	@echo "Prüfe Service-Status..."
+	@echo "Entferne eventuell vorhandene Container mit gleichem Namen..."
+	ssh $(SERVER_IP) "cd ~/ha-proxy && docker-compose down -v 2>/dev/null || true"
+	ssh $(SERVER_IP) "docker rm -f \$$(docker ps -a --filter name=haproxy -q) 2>/dev/null || true"
+
+	@echo "Starte Service neu..."
+	ssh $(SERVER_IP) "cd ~/ha-proxy && docker-compose up -d --build"
+
+	@echo "=== Deployment von ha-proxy auf $(SERVER_IP) abgeschlossen ==="
