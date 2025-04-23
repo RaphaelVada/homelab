@@ -15,6 +15,7 @@ RUN apt-get update && \
     git \
     gnupg \
     jq \
+    dnsutils \
     lsb-release \
     make \
     iputils-ping \
@@ -25,6 +26,7 @@ RUN apt-get update && \
     python3-pip \
     python3-venv \
     sshpass \
+    rsync \
     unzip \
     wget \
     zsh \
