@@ -5,3 +5,7 @@ _vault-volumes
 .devcontainer/Dockerfile.dockerx
 services/core-dns/Corefile
 services/core-dns/internal-domain.db
+infrastructure/talos/_out/*
+infrastructure/talos/secrets.yaml
+infrastructure/talos/talosconfig
+infrastructure/talos/kubeconfig

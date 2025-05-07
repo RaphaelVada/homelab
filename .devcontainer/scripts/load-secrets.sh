@@ -28,4 +28,7 @@ ln -s /secrets/services_core-dns_Corefile /workspace/services/core-dns/Corefile
 ln -s /secrets/ervices_core-dns_internal-domain.db /workspace/services/core-dns/internal-domain.db
 
 ln -sf "/secrets/workspace_.devcontainer_scripts_testfile.txt" "/workspace/.devcontainer/scripts/testfile.txt"
+ln -sf "/secrets/workspace_infrastructure_talos_kubeconfig" "/workspace/infrastructure/talos/kubeconfig"
+ln -sf "/secrets/workspace_infrastructure_talos_talosconfig" "/workspace/infrastructure/talos/talosconfig"
+ln -sf "/secrets/workspace_infrastructure_talos_secrets.yaml" "/workspace/infrastructure/talos/secrets.yaml"
 echo -e "${GREEN}[SUCCESS]${NC} Secrets geladen."

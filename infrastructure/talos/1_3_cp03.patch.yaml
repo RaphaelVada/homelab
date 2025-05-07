@@ -1,0 +1,30 @@
+# Provides machine specific configuration options.
+machine:
+  certSANs:
+    - 10.0.2.31
+    - 192.168.2.45
+    - rotterdam-cp03
+    - rotterdam-cp03.my.vadue.de
+    - rotterdam-cp03.internal
+
+  network:
+    hostname: rotterdam-cp03.my.vadue.de
+    interfaces:
+      - interface: ens18
+        dhcp: true # Management-Traffic, Gateway und DNS über DHCP
+      - interface: ens19
+        addresses:
+          - 10.0.2.31/16 # Feste IP für Cluster- und Storage-Traffic
+        routes:
+          - network: 10.0.0.0/16
+  install:
+    disk: /dev/sda # The disk used for installations.
+
+cluster:
+  apiServer:
+    certSANs:
+      - 10.0.2.31
+      - 192.168.2.45
+      - rotterdam-cp03
+      - rotterdam-cp03.my.vadue.de
+      - rotterdam-cp03.internal

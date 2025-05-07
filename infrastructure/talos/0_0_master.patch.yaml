@@ -1,0 +1,52 @@
+version: v1alpha1 # Indicates the schema used to decode the contents.
+# Provides machine specific configuration options.
+
+machine:
+  # Used to provide additional options to the kubelet.
+  kubelet:
+    nodeIP:
+      validSubnets:
+        - 10.0.0.0/16
+
+  install:
+    image: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515:v1.9.5 # Allows for supplying the image used to perform the installation.
+    wipe: false # Indicates if the installation disk should be wiped at installation time.
+  network:
+    nameservers:
+      - 192.168.100.101
+    searchDomains:
+      - internal
+      - my.vadue.de
+      - fritz.box
+
+    # # Allows for extra entries to be added to the `/etc/hosts` file
+    extraHostEntries:
+      - ip: 10.0.2.11
+        aliases:
+          - rotterdam-cp01
+          - rotterdam-cp01.internal
+      - ip: 10.0.2.21
+        aliases:
+          - rotterdam-cp02
+          - rotterdam-cp02.internal
+      - ip: 10.0.2.31
+        aliases:
+          - rotterdam-cp03
+          - rotterdam-cp03.internal
+      - ip: 10.0.2.12
+        aliases:
+          - rotterdam-wk01
+          - rotterdam-wk01.internal
+      - ip: 10.0.2.22
+        aliases:
+          - rotterdam-wk02
+          - rotterdam-wk02.internal
+      - ip: 10.0.2.23
+        aliases:
+          - rotterdam-wk03
+          - rotterdam-wk03.internal
+
+cluster:
+  apiServer:
+    image: registry.k8s.io/kube-apiserver:v1.32.3 # The container image used in the API server manifest.
+    # Extra certificate subject alternative names for the API server's certificate.

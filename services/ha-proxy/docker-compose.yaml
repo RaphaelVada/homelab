@@ -10,6 +10,10 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "6443:6443" # Kubernetes API
+      - "50000:50000" # Talos API
+      - "9000:9000" # HAProxy Stats
+      - "8404:8404" # HAproxy stats
     volumes:
       - ./config/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
       - ./certs:/etc/ssl/private:ro

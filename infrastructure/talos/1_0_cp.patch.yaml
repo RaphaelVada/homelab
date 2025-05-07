@@ -1,0 +1,25 @@
+# Provides machine specific configuration options.
+machine:
+  type: controlplane # Defines the role of the machine within the cluster.
+  certSANs:
+    - 192.168.2.153
+    - rotterdam
+    - rotterdam.my.vadue.de
+    - rotterdam.internal
+
+cluster:
+  etcd:
+    advertisedSubnets:
+      - 10.0.0.0/16
+  controlPlane:
+    endpoint: https://rotterdam.my.vadue.de:6443 # Endpoint is the canonical controlplane endpoint, which can be an IP address or a DNS hostname.
+  clusterName: rotterdam # Configures the cluster's name.
+
+  apiServer:
+    image: registry.k8s.io/kube-apiserver:v1.32.3 # The container image used in the API server manifest.
+    # Extra certificate subject alternative names for the API server's certificate.
+    certSANs:
+      - 192.168.2.153
+      - rotterdam
+      - rotterdam.my.vadue.de
+      - rotterdam.internal

@@ -1,0 +1,18 @@
+# Provides machine specific configuration options.
+machine:
+  type: worker # Defines the role of the machine within the cluster.
+  certSANs:
+    - 192.168.2.153
+    - rotterdam
+    - rotterdam.my.vadue.de
+    - rotterdam.internal
+
+cluster:
+  apiServer:
+    image: registry.k8s.io/kube-apiserver:v1.32.3 # The container image used in the API server manifest.
+    # Extra certificate subject alternative names for the API server's certificate.
+    certSANs:
+      - 192.168.2.153
+      - rotterdam
+      - rotterdam.my.vadue.de
+      - rotterdam.internal

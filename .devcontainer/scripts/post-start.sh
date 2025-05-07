@@ -81,3 +81,5 @@ log "lade secrets"
 load-secrets.sh
 
 success "Vault Initialisierung abgeschlossen!"
+
+source /workspace/infrastructure/talos/env.sh

@@ -33,6 +33,8 @@ RUN apt-get update && \
     ansible \
     ansible-lint \
     locales \
+    telnet \
+    netcat-traditional \
     && locale-gen de_DE.UTF-8 \
     && rm -rf /var/lib/apt/lists/*
 

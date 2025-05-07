@@ -112,3 +112,16 @@ and also i might want to sync the secrets on git commit
   - excecute first init from there
   - load current settings
 - maybe i could bake in nfs mount into my docker-compose?
+
+# Installing Talos Linux
+
+Modified the haproxy for tcp loadbalancing to cp nodes
+
+- need to review the haproxy config
+- maybe give the loadbalancer a dedicaded ip (currently shared with coredns)
+- learn about the health check mechanic of ha proxy
+- learn about the statistic interfaces of ha proxy
+
+Should also play arround with netcat and telnet for troubleshooting like claude is suggesting all the time
+
+Also need to add ssl termination & certificates for pve frontend.
