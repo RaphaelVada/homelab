@@ -1,0 +1,149 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-webserver
+  namespace: default
+  labels:
+    app: simple-webserver
+spec:
+  replicas: 3 # Auf allen drei Workers verteilen
+  selector:
+    matchLabels:
+      app: simple-webserver
+  template:
+    metadata:
+      labels:
+        app: simple-webserver
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - simple-webserver
+                topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: webserver
+          image: nginx:alpine
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: html-content
+              mountPath: /usr/share/nginx/html
+      volumes:
+        - name: html-content
+          configMap:
+            name: simple-webserver-content
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: simple-webserver-content
+  namespace: default
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>K8s Test Webserver</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          margin: 40px;
+          line-height: 1.6;
+          color: #333;
+        }
+        .container {
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 20px;
+          background-color: #f9f9f9;
+          border-radius: 8px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+          color: #2c3e50;
+          text-align: center;
+          border-bottom: 1px solid #ddd;
+          padding-bottom: 10px;
+        }
+        .info-box {
+          background-color: #e8f4fc;
+          border-left: 4px solid #3498db;
+          padding: 15px;
+          margin: 20px 0;
+          border-radius: 4px;
+        }
+        .host-info {
+          font-weight: bold;
+        }
+        .timestamp {
+          text-align: right;
+          color: #7f8c8d;
+          font-size: 0.9em;
+          margin-top: 20px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>Kubernetes Test Webserver</h1>
+
+        <div class="info-box">
+          <p>Dieser Server läuft als Pod in einem Kubernetes-Cluster.</p>
+          <p class="host-info">Host: <span id="hostname">loading...</span></p>
+          <p>Pod IP: <span id="pod-ip">loading...</span></p>
+          <p>Node: <span id="node-name">loading...</span></p>
+        </div>
+
+        <div class="timestamp">
+          Seite geladen: <span id="current-time">loading...</span>
+        </div>
+      </div>
+
+      <script>
+        // Hostname aus dem Location-Objekt ermitteln
+        document.getElementById('hostname').textContent = window.location.hostname;
+
+        // Aktuelle Zeit anzeigen
+        document.getElementById('current-time').textContent = new Date().toLocaleString();
+
+        // Hier würden normalerweise weitere Informationen via API abgerufen
+        // Da wir keine API haben, zeigen wir Platzhalter
+        document.getElementById('pod-ip').textContent = "Würde via API abgerufen";
+        document.getElementById('node-name').textContent = "Würde via API abgerufen";
+
+        // Seite alle 30 Sekunden aktualisieren
+        setTimeout(function() {
+          window.location.reload();
+        }, 30000);
+      </script>
+    </body>
+    </html>
+---
+# NodePort Service - für externen Zugriff
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-webserver-nodeport
+  namespace: default
+spec:
+  type: NodePort
+  selector:
+    app: simple-webserver
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30080 # Wird auf Port 30080 an allen Node-IPs verfügbar sein
