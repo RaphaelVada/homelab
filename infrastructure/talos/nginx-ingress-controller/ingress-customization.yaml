@@ -1,0 +1,54 @@
+# ingress-customization.yaml
+---
+# Service mit LoadBalancer-Typ für den Ingress Controller
+# (ersetzt den Standard-Service aus dem offiziellen Manifest)
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress-nginx-controller
+  namespace: ingress-nginx
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+  annotations:
+    # Optionale Anpassungen der Service-Konfiguration
+    # metallb.universe.tf/loadBalancerIPs: "10.x.x.50"  # Spezifische IP anfordern (falls gewünscht)
+spec:
+  type: LoadBalancer # Nutzt MetalLB für externe IP
+  # Optionale Konfiguration für eine feste IP-Adresse
+  # loadBalancerIP: 10.x.x.50
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: http
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: https
+  selector:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/component: controller
+---
+# ConfigMap für Nginx-Konfigurationsanpassungen
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ingress-nginx-controller
+  namespace: ingress-nginx
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+data:
+  # Benutzerdefinierte Nginx-Konfiguration
+  proxy-body-size: "50m" # Erhöht die maximale Upload-Größe
+  client-header-buffer-size: "2k"
+  large-client-header-buffers: "4 8k"
+
+  # Weitere mögliche Anpassungen (auskommentiert)
+  # proxy-connect-timeout: "10"
+  # proxy-read-timeout: "120"
+  # proxy-send-timeout: "120"
+  # enable-brotli: "true"
+  # use-forwarded-headers: "true"
